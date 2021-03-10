@@ -1,5 +1,14 @@
 Ball = {}
 
+collideSound = love.audio.newSource("assets/collideSound.mp3", "static")
+scoreSound = love.audio.newSource("assets/scoreSound.mp3", "static")
+bgm = love.audio.newSource("assets/bgm.mp3", "stream")
+
+collideSound:setVolume(0.5)
+scoreSound:setVolume(0.5)
+bgm:setVolume(1.5)
+bgm:setLooping(true)
+
 function Ball:load()
 	self.img = love.graphics.newImage("assets/ball.png")
 	self.width = self.img:getWidth()
@@ -9,6 +18,8 @@ function Ball:load()
 	self.speed = 340
 	self.xVel = -self.speed
 	self.yVel = 0
+	
+	bgm:play()
 end
 
 function Ball:update(dt)
@@ -40,6 +51,7 @@ function Ball:collidePlayer()
 		local middlePlayer = Player.y + Player.height / 2
 		local collisionPosition = middleBall - middlePlayer
 		self.yVel = collisionPosition * 5
+		collideSound:play()
 	end
 end
 
@@ -50,6 +62,7 @@ function Ball:collideAI()
 		local middleAI = AI.y + AI.height / 2
 		local collisionPosition = middleBall - middleAI
 		self.yVel = collisionPosition * 5
+		collideSound:play()
 	end
 end
 
@@ -57,11 +70,13 @@ function Ball:score()
 	if self.x < 0 then
 		self:resetPosition(1)
 		Score.ai = Score.ai + 1
+		scoreSound:play()
 	end
 
 	if self.x + self.height > love.graphics.getWidth() then
 		self:resetPosition(-1)
 		Score.player = Score.player + 1
+		scoreSound:play()
 	end
 end
 
